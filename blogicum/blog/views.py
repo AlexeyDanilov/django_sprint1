@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import Http404
 
 
 posts = [
@@ -44,20 +45,34 @@ posts = [
     },
 ]
 
+getter_post = {
+    0: posts[0],
+    1: posts[1],
+    2: posts[2]
+}
+
 
 def index(request):
-    return render(request=request,
-                  template_name='blog/index.html',
-                  context={'posts': reversed(posts)})
+    return render(
+        request=request,
+        template_name='blog/index.html',
+        context={'posts': reversed(posts)}
+    )
 
 
-def post_detail(request, id):
-    return render(request=request,
-                  template_name='blog/detail.html',
-                  context={'post': posts[id]})
+def post_detail(request, post_id):
+    if not getter_post.get(post_id):
+        raise Http404('Post not found')
+    return render(
+        request=request,
+        template_name='blog/detail.html',
+        context={'post': getter_post.get(post_id)}
+    )
 
 
 def category_posts(request, category_slug):
-    return render(request=request,
-                  template_name='blog/category.html',
-                  context={'category': category_slug})
+    return render(
+        request=request,
+        template_name='blog/category.html',
+        context={'category': category_slug}
+    )
