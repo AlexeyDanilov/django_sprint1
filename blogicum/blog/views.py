@@ -45,11 +45,14 @@ posts = [
     },
 ]
 
-getter_post = {
-    0: posts[0],
-    1: posts[1],
-    2: posts[2]
-}
+
+def get_post(index):
+    _posts = {}
+    for count, value in enumerate(posts):
+        if count == value.get('id'):
+            _posts[count] = value
+
+    return _posts.get(index)
 
 
 def index(request):
@@ -61,12 +64,13 @@ def index(request):
 
 
 def post_detail(request, post_id):
-    if not getter_post.get(post_id):
+    post = get_post(post_id)
+    if not post:
         raise Http404('Post not found')
     return render(
         request=request,
         template_name='blog/detail.html',
-        context={'post': getter_post.get(post_id)}
+        context={'post': post}
     )
 
 
